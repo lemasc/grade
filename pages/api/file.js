@@ -8,15 +8,15 @@ export default async (req, res) => {
         data: "method-not-allow"
       });
     }
-    if (!req.body.term || !req.body.grade || !req.body.studentid) {
+    if (!req.query.term || !req.query.grade || !req.query.studentid) {
       return res.status(400).json({
         error: true,
       });
     }
-    let fetchUrl = "https://webapp.student.co.th/application/uploads/institutes_gpa_attach/641/" + req.body.term + "/" + req.body.grade +"/" + req.body.studentid +".pdf";
+    let fetchUrl = "https://webapp.student.co.th/application/uploads/institutes_gpa_attach/641/" + req.query.term + "/" + req.query.grade +"/" + req.query.studentid +".pdf";
     try {
         let file = await fetch(fetchUrl);
-        let filename = "WPMReport_"+req.body.term +"_" +req.body.grade +"_"+ req.body.studentid +".pdf";
+        let filename = "WPMReport_"+req.query.term +"_" +req.query.grade +"_"+ req.query.studentid +".pdf";
         
         res.setHeader("Content-Transfer-Encoding","Binary");
         res.setHeader('Content-disposition', 'attachment; filename=' + filename);
