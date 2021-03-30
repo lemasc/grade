@@ -1,0 +1,52 @@
+body {
+  font-family: 'Sarabun', sans-serif;
+  margin: 0 auto;
+  text-align: center;
+  height: auto;
+}
+label, h2 {
+  font-family: "Mitr", sans-serif;
+}
+.center {
+  text-align: center;
+}
+.form-control {
+  display: block;
+   margin: 0 auto;
+  text-align-last:center;
+}
+.alert {
+  margin: 0 auto;
+  display: inline-block;
+    width: 50%;
+  margin-bottom: 20px;
+}
+@media only screen and (max-width: 768px) {
+  footer {
+    margin: 5% !important;
+    margin-bottom: 10% !important;
+  }
+  .alert {
+    width: 80% !important;
+  }
+}
+.footer span.copyright {
+  font-size: 90%;
+  line-height: 40px;
+  text-transform: none;
+  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
+#notfound,#filefound {
+  display:none;
+}
+footer {
+  font-family: "Mitr", sans-serif;
+  margin: 1.5%;
+}
+.light{
+  font-weight: 300;
+}
+#studentimg {
+  -webkit-filter: grayscale(50%);
+  filter: grayscale(50%);
+}
