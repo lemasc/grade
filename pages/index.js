@@ -82,7 +82,7 @@ export default function Home() {
             </span>
           </div>
       <main>
-        <form action="/api/file" id="gradefrm" onSubmit={handleSubmit(submit)}method="post">
+        <form action="/api/file" id="gradefrm" onSubmit={handleSubmit(submit)}method="get">
          
           {config && (
             <Fragment>

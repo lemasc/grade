@@ -2,7 +2,7 @@ import {createReadStream} from "fs"
 var https = require('https');
 
 export default async (req, res) => {
-    if(req.method != "POST") {
+    if(req.method != "GET") {
       return res.status(400).json({
         error: true,
         data: "method-not-allow"
