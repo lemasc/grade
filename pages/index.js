@@ -174,7 +174,7 @@ export default function Home() {
                 <br />
               </i>
               <span className="copyright">
-                Copyright &copy; 2013- Student Care Solution
+                Copyright &copy; 2013-{dayjs().format("YYYY")} Student Care Solution
                 <br />
               </span>
             </div>
