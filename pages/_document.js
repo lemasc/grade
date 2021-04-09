@@ -14,7 +14,6 @@ class MyDocument extends Document {
           <img className="center" src="/logo_wpm.png" width="100" />
           <h2>ระบบแจ้งผลการเรียนจาก Student Care</h2>
           <h5 style={{fontStyle: "italic"}}>แบบรายงานผลการเรียนรายบุคคล PDF</h5>
-
           <Main />
           <NextScript />
         </body>
