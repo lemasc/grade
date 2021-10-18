@@ -4,7 +4,7 @@ import styles from "../styles/Home.module.css";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useForm } from "react-hook-form";
-import $ from "jquery"
+import $ from "jquery";
 dayjs.extend(customParseFormat);
 
 export default function Home() {
@@ -21,7 +21,7 @@ export default function Home() {
     console.log(data);
     $("#notfound").css("display", "none");
     $("#filefound").css("display", "none");
-    $("#filefound").find('a').remove();
+    $("#filefound").find("a").remove();
     var $inputs = $("#gradefrm").find("input, select, button, textarea");
     let body = new URLSearchParams(data).toString();
     try {
@@ -33,29 +33,27 @@ export default function Home() {
         },
       });
       let res = await checkFile.json();
-      if(!res.success) {
+      if (!res.success) {
         throw new Error("File not found");
       }
-      
+
       $("#filefound").fadeIn();
       console.log(res.url);
       var direct = document.createElement("a");
-      direct.className = "alert-link"
-      direct.innerText = "ที่นี่"
-      direct.href= res.url;
-      direct.setAttribute("download","");
-      direct.setAttribute("target","_blank");
+      direct.className = "alert-link";
+      direct.innerText = "ที่นี่";
+      direct.href = res.url;
+      direct.setAttribute("download", "");
+      direct.setAttribute("target", "_blank");
       $("#filefound>span").append(direct);
       $("#gradefrm").submit();
       //direct.click();
       //$("#direct").attr("download",res.url);
       //document.getElementById("direct").click();
-    }
-    catch (err) {
+    } catch (err) {
       console.error(err);
       $("#notfound").fadeIn();
-    }
-    finally {
+    } finally {
       $inputs.prop("disabled", false);
       window.scrollTo(0, 0);
     }
@@ -70,20 +68,22 @@ export default function Home() {
         />
       </Head>
       <div className="alert center alert-danger" id="notfound">
-            <strong>ล้มเหลว!</strong>{" "}
-            <span className="light">
-              ไม่พบข้อมูลในระบบ กรุณาตรวจสอบข้อมูลแล้วลองใหม่อีกครั้ง
-            </span>
-          </div>
-          <div className="alert center alert-success" id="filefound">
-            <strong>สำเร็จ!</strong>{" "}
-            <span className="light">
-              ไฟล์ควรโหลดภายในไม่กี่วินาที หากไม่ คลิก
-            </span>
-          </div>
+        <strong>ล้มเหลว!</strong>{" "}
+        <span className="light">
+          ไม่พบข้อมูลในระบบ กรุณาตรวจสอบข้อมูลแล้วลองใหม่อีกครั้ง
+        </span>
+      </div>
+      <div className="alert center alert-success" id="filefound">
+        <strong>สำเร็จ!</strong>{" "}
+        <span className="light">ไฟล์ควรโหลดภายในไม่กี่วินาที หากไม่ คลิก</span>
+      </div>
       <main>
-        <form action="/api/file" id="gradefrm" onSubmit={handleSubmit(submit)}method="get">
-         
+        <form
+          action="/api/file"
+          id="gradefrm"
+          onSubmit={handleSubmit(submit)}
+          method="get"
+        >
           {config && (
             <Fragment>
               <div className="form-group">
@@ -149,19 +149,26 @@ export default function Home() {
                 </select>
               </div>
               <div className="form-group">
-                <label htmlFor="studentid">ป้อนรหัสประจำตัวนักเรียน 5 หลัก:</label>
+                <label htmlFor="studentid">
+                  ป้อนรหัสประจำตัวนักเรียน 5 หลัก:
+                </label>
                 <input
                   name="studentid"
                   type="number"
                   id="studentid"
                   class="form-control center"
-                  ref={register({ required: true, maxLength: 5})}
+                  ref={register({ required: true, maxLength: 5 })}
                   title="Enter Student ID"
                 />
               </div>
             </Fragment>
           )}
-          <input value="ดูผลการเรียน" id="getgrade" class="btn btn-success" type="submit"></input>
+          <input
+            value="ดูผลการเรียน"
+            id="getgrade"
+            className="btn btn-success"
+            type="submit"
+          ></input>
         </form>
       </main>
 
@@ -174,7 +181,8 @@ export default function Home() {
                 <br />
               </i>
               <span className="copyright">
-                Copyright &copy; 2013-{dayjs().format("YYYY")} Student Care Solution
+                Copyright &copy; 2013-{dayjs().format("YYYY")} Student Care
+                Solution
                 <br />
               </span>
             </div>
