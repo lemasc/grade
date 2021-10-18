@@ -10,11 +10,13 @@ dayjs.extend(customParseFormat);
 export default function Home() {
   let [config, setConfig] = useState(null);
   let { register, handleSubmit } = useForm();
-  useEffect(async () => {
-    let cfg = await fetch("/config.json");
-    let data = await cfg.json();
-    console.log(data);
-    setConfig(data);
+  useEffect(() => {
+    (async () => {
+      let cfg = await fetch("/config.json");
+      let data = await cfg.json();
+      console.log(data);
+      setConfig(data);
+    })();
   }, []);
   let $mathayom = 0;
   async function submit(data) {
@@ -93,7 +95,7 @@ export default function Home() {
                   id="term"
                   className="form-control center"
                   title="Select Term"
-                  ref={register({ required: true })}
+                  {...register("term", { required: true })}
                 >
                   <option value="">กรุณาเลือก</option>
                   {config.data.map((data) => {
@@ -133,7 +135,7 @@ export default function Home() {
                   id="grade"
                   className="form-control center"
                   title="Select Grade"
-                  ref={register({ required: true })}
+                  {...register("grade", { required: true })}
                 >
                   <option value="">กรุณาเลือก</option>
                   {config.class.map(($room, $i) => {
@@ -156,8 +158,8 @@ export default function Home() {
                   name="studentid"
                   type="number"
                   id="studentid"
-                  class="form-control center"
-                  ref={register({ required: true, maxLength: 5 })}
+                  className="form-control center"
+                  {...register("studentid", { required: true, maxLength: 5 })}
                   title="Enter Student ID"
                 />
               </div>
