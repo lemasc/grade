@@ -3,23 +3,39 @@ import { Fragment, useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import buddhistEra from "dayjs/plugin/buddhistEra";
 import { useForm } from "react-hook-form";
 import $ from "jquery";
 dayjs.extend(customParseFormat);
+dayjs.extend(buddhistEra);
+
+type Config = {
+  class: number[][];
+  data: {
+    [yearcode: string]: {
+      [termcode: string]: string;
+    };
+  };
+};
 
 export default function Home() {
-  let [config, setConfig] = useState(null);
-  let { register, handleSubmit } = useForm();
+  const [config, setConfig] = useState<Config>(null);
+  const [fetching, setFetching] = useState(false);
+  const { register, handleSubmit } = useForm();
   useEffect(() => {
     (async () => {
-      let cfg = await fetch("/config.json");
-      let data = await cfg.json();
+      const data = await fetch(
+        `/config.json?t=${(Math.random() * 100).toFixed(2)}`
+      ).then((c) => c.json());
       console.log(data);
       setConfig(data);
     })();
   }, []);
-  let $mathayom = 0;
-  async function submit(data) {
+
+  async function submit(
+    data: string | string[][] | Record<string, string> | URLSearchParams
+  ) {
+    if (fetching) return;
     console.log(data);
     $("#notfound").css("display", "none");
     $("#filefound").css("display", "none");
@@ -27,6 +43,7 @@ export default function Home() {
     var $inputs = $("#gradefrm").find("input, select, button, textarea");
     let body = new URLSearchParams(data).toString();
     try {
+      setFetching(true);
       let checkFile = await fetch("/api/check", {
         method: "POST",
         body: body,
@@ -52,23 +69,32 @@ export default function Home() {
       //direct.click();
       //$("#direct").attr("download",res.url);
       //document.getElementById("direct").click();
+      setFetching(false);
     } catch (err) {
       console.error(err);
       $("#notfound").fadeIn();
+      setFetching(false);
     } finally {
       $inputs.prop("disabled", false);
       window.scrollTo(0, 0);
     }
   }
+  // Chunk function from https://stackoverflow.com/a/60779547
+  const chunk = (array: any[], size: number) =>
+    array.reduce((acc: any[], _: any, i: number) => {
+      if (i % size === 0) acc.push(array.slice(i, i + size));
+      return acc;
+    }, []);
   return (
     <div className={styles.container}>
       <Head>
         <title>EnquireStudentScore-WPM</title>
-        <link
-          href="https://fonts.googleapis.com/css?family=Mitr:300,400|Sarabun&display=swap"
-          rel="stylesheet"
-        />
       </Head>
+      <header className={styles.header}>
+        <img className="center" src="/logo_wpm.png" width="100" />
+        <h2>ระบบแจ้งผลการเรียนจาก Student Care</h2>
+        <h5 style={{ fontStyle: "italic" }}>แบบรายงานผลการเรียนรายบุคคล PDF</h5>
+      </header>
       <div className="alert center alert-danger" id="notfound">
         <strong>ล้มเหลว!</strong>{" "}
         <span className="light">
@@ -79,7 +105,7 @@ export default function Home() {
         <strong>สำเร็จ!</strong>{" "}
         <span className="light">ไฟล์ควรโหลดภายในไม่กี่วินาที หากไม่ คลิก</span>
       </div>
-      <main>
+      <main className={styles.main}>
         <form
           action="/api/file"
           id="gradefrm"
@@ -98,34 +124,23 @@ export default function Home() {
                   {...register("term", { required: true })}
                 >
                   <option value="">กรุณาเลือก</option>
-                  {config.data.map((data) => {
-                    return data.term.map((v, i) => {
-                      let curDate = dayjs(v.date, "DD/MM/YYYY");
-                      let $year;
-                      switch (curDate.format("YYYY")) {
-                        case "2018":
-                          $year = 2561;
-                          break;
-                        case "2019":
-                          $year = 2562;
-                          break;
-                        case "2020":
-                          $year = 2563;
-                          break;
-                        case "2021":
-                          $year = 2564;
-                          break;
-                      }
+                  {Object.entries(config.data).map(([yearcode, term]) =>
+                    Object.entries(term).map(([termcode, date], i) => {
+                      let curDate = dayjs(date, "DD/MM/YYYY");
+                      if (curDate.unix() > dayjs().unix()) return null;
                       if (i % 2 !== 0) {
-                        $year = $year - 1;
+                        curDate = curDate.subtract(1, "year");
                       }
                       return (
-                        <option value={v.id + "/" + data.yearcode}>
-                          ภาคเรียนที่ {(i % 2) + 1}/{$year}
+                        <option
+                          key={`${termcode}/${yearcode}`}
+                          value={`${termcode}/${yearcode}`}
+                        >
+                          ภาคเรียนที่ {(i % 2) + 1}/{curDate.format("BBBB")}
                         </option>
                       );
-                    });
-                  })}
+                    })
+                  )}
                 </select>
               </div>
               <div className="form-group">
@@ -138,14 +153,14 @@ export default function Home() {
                   {...register("grade", { required: true })}
                 >
                   <option value="">กรุณาเลือก</option>
-                  {config.class.map(($room, $i) => {
-                    if (($i + 1) % 4 === 1) {
-                      $mathayom++;
-                    }
-                    return (
-                      <option value={$room}>
-                        ม. {$mathayom}/{($i % 4) + 1}
-                      </option>
+                  {config.class.map((group, isUpper) => {
+                    return chunk(group, isUpper ? 3 : 4).map(
+                      (classes, level: number) =>
+                        classes.map((room: string, i: number) => (
+                          <option value={room}>
+                            ม. {(isUpper ? 3 : 0) + level + 1}/{i + 1}
+                          </option>
+                        ))
                     );
                   })}
                 </select>
@@ -170,7 +185,7 @@ export default function Home() {
             id="getgrade"
             className="btn btn-success"
             type="submit"
-          ></input>
+          />
         </form>
       </main>
 

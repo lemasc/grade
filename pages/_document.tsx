@@ -9,11 +9,14 @@ class MyDocument extends Document {
   render() {
     return (
       <Html>
-        <Head />
+        <Head>
+          <link rel="preconnect" href="https://fonts.gstatic.com" />
+          <link
+            href="https://fonts.googleapis.com/css?family=Mitr:300,400|Sarabun&display=swap"
+            rel="stylesheet"
+          />
+        </Head>
         <body>
-          <img className="center" src="/logo_wpm.png" width="100" />
-          <h2>ระบบแจ้งผลการเรียนจาก Student Care</h2>
-          <h5 style={{fontStyle: "italic"}}>แบบรายงานผลการเรียนรายบุคคล PDF</h5>
           <Main />
           <NextScript />
         </body>
